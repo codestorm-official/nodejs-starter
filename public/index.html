@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Node.js Starter</title>
+    <link rel="icon" type="image/svg+xml" href="https://nodejs.org/static/logos/nodejsHex.svg" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0e0e11;
+            --surface: #17171c;
+            --border: #2a2a35;
+            --accent: #7c6dfa;
+            --accent2: #4fc9a4;
+            --text: #e8e8f0;
+            --muted: #6b6b80;
+            --danger: #f06a6a;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        /* Animated background blobs */
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.12;
+            animation: drift 10s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        body::before {
+            width: 500px;
+            height: 500px;
+            background: var(--accent);
+            top: -100px;
+            left: -100px;
+        }
+
+        body::after {
+            width: 400px;
+            height: 400px;
+            background: var(--accent2);
+            bottom: -80px;
+            right: -80px;
+            animation-delay: -5s;
+        }
+
+        @keyframes drift {
+            from {
+                transform: translate(0, 0) scale(1);
+            }
+
+            to {
+                transform: translate(40px, 30px) scale(1.1);
+            }
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 580px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            animation: fadeUp 0.5s ease both;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header card */
+        .hero {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .logo {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .hero-text h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-text p {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Status badge */
+        .status-badge {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.3rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+
+        .status-badge.ok {
+            color: var(--accent2);
+            border-color: var(--accent2);
+            background: rgba(79, 201, 164, .08);
+        }
+
+        .status-badge.error {
+            color: var(--danger);
+            border-color: var(--danger);
+            background: rgba(240, 106, 106, .08);
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .dot.pulse {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.4;
+                transform: scale(0.8);
+            }
+        }
+
+        /* Info row */
+        .info-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .info-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.1rem 1.25rem;
+        }
+
+        .info-card .label {
+            font-size: 0.72rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .info-card .value {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-top: 0.25rem;
+            font-variant-numeric: tabular-nums;
+        }
+
+        #uptime-val {
+            color: var(--accent2);
+        }
+
+        #env-val {
+            color: var(--accent);
+        }
+
+        /* Endpoints */
+        .endpoints-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .endpoints-header {
+            padding: 0.9rem 1.25rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .endpoint-item {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.85rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            text-decoration: none;
+            color: var(--text);
+            transition: background 0.15s;
+        }
+
+        .endpoint-item:last-child {
+            border-bottom: none;
+        }
+
+        .endpoint-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .method {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 5px;
+            min-width: 42px;
+            text-align: center;
+            background: rgba(124, 109, 250, 0.15);
+            color: var(--accent);
+        }
+
+        .ep-path {
+            font-size: 0.88rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .ep-desc {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-left: auto;
+        }
+
+        .ep-arrow {
+            color: var(--muted);
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--muted);
+            padding-top: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="hero">
+            <div class="logo"><img src="https://nodejs.org/static/logos/nodejsHex.svg" alt="Node.js" /></div>
+            <div class="hero-text">
+                <h1>Node.js Starter</h1>
+                <p>Express · REST API · Docker ready</p>
+            </div>
+            <div class="status-badge" id="status-badge">
+                <span class="dot pulse" id="dot"></span>
+                <span id="status-text">Checking…</span>
+            </div>
+        </div>
+
+        <div class="info-row">
+            <div class="info-card">
+                <div class="label">Uptime</div>
+                <div class="value" id="uptime-val">—</div>
+            </div>
+            <div class="info-card">
+                <div class="label">Environment</div>
+                <div class="value" id="env-val">—</div>
+            </div>
+        </div>
+
+        <div class="endpoints-card">
+            <div class="endpoints-header">Available Endpoints</div>
+            <a class="endpoint-item" href="/health" target="_blank">
+                <span class="method">GET</span>
+                <span class="ep-path">/health</span>
+                <span class="ep-desc">Server health check</span>
+                <span class="ep-arrow">↗</span>
+            </a>
+            <a class="endpoint-item" href="/api/hello" target="_blank">
+                <span class="method">GET</span>
+                <span class="ep-path">/api/hello</span>
+                <span class="ep-desc">Hello world</span>
+                <span class="ep-arrow">↗</span>
+            </a>
+        </div>
+
+        <div class="footer">Built with Express.js &mdash; ready to deploy on Dokploy</div>
+    </div>
+
+    <script>
+        const badge = document.getElementById('status-badge');
+        const dot = document.getElementById('dot');
+        const txt = document.getElementById('status-text');
+        const upt = document.getElementById('uptime-val');
+        const env = document.getElementById('env-val');
+
+        function fmtUptime(s) {
+            s = Math.floor(s);
+            if (s < 60) return s + 's';
+            if (s < 3600) return Math.floor(s / 60) + 'm ' + (s % 60) + 's';
+            return Math.floor(s / 3600) + 'h ' + Math.floor((s % 3600) / 60) + 'm';
+        }
+
+        async function checkHealth() {
+            try {
+                const r = await fetch('/health');
+                const d = await r.json();
+                badge.className = 'status-badge ok';
+                dot.className = 'dot';
+                txt.textContent = 'Online';
+                upt.textContent = fmtUptime(d.uptime);
+                env.textContent = document.location.hostname === 'localhost' ? 'development' : 'production';
+            } catch {
+                badge.className = 'status-badge error';
+                dot.className = 'dot';
+                txt.textContent = 'Offline';
+                upt.textContent = '—';
+            }
+        }
+
+        checkHealth();
+        setInterval(checkHealth, 10000);
+    </script>
+</body>
+
+</html>
