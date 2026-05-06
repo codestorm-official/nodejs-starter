@@ -1,6 +1,15 @@
+![Railway](https://img.shields.io/badge/Railway-Supported-blue?logo=railway)
+![Docker](https://img.shields.io/badge/Docker-Supported-blue?logo=docker)
+![Node.js](https://img.shields.io/badge/Node.js-Supported-green?logo=node.js)
+![Express](https://img.shields.io/badge/Express-Supported-green?logo=express)
+
 # Node.js Express Starter
 
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/nodejs-starter?referralCode=asepsp&utm_medium=integration&utm_source=template&utm_campaign=generic)
+
 A minimal, Docker-ready Node.js web application built with Express.js.
+
+![](./img/homepage.png)
 
 ## Tech Stack
 
